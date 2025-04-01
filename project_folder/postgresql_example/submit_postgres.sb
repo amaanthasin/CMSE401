@@ -1,0 +1,15 @@
+#!/bin/bash
+#SBATCH --job-name=postgres-benchmark
+#SBATCH --output=postgres_output.log
+#SBATCH --time=00:10:00
+#SBATCH --mem=1G
+#SBATCH --ntasks=1
+
+# Create the database
+createdb test_db
+
+# Run SQL scripts
+psql test_db < create_tables.sql
+psql test_db < insert_data.sql
+psql test_db < run_queries.sql
+

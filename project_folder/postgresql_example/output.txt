@@ -1,0 +1,14 @@
+ERROR:  relation "users" already exists
+ERROR:  relation "idx_age" already exists
+INSERT 0 1000000
+                                                         QUERY PLAN                                                         
+----------------------------------------------------------------------------------------------------------------------------
+ Bitmap Heap Scan on users  (cost=446.56..27502.98 rows=40533 width=19) (actual time=18.516..1746.753 rows=40186 loops=1)
+   Recheck Cond: (age = 25)
+   Heap Blocks: exact=20243
+   ->  Bitmap Index Scan on idx_age  (cost=0.00..436.43 rows=40533 width=0) (actual time=13.782..13.783 rows=40186 loops=1)
+         Index Cond: (age = 25)
+ Planning Time: 10.366 ms
+ Execution Time: 1750.020 ms
+(7 rows)
+
