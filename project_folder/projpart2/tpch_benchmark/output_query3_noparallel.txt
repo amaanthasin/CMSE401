@@ -1,0 +1,32 @@
+SET
+SET
+SET
+                                                                      QUERY PLAN                                                                      
+------------------------------------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=361343.23..362138.03 rows=317920 width=44) (actual time=3131.011..3132.450 rows=11620 loops=1)
+   Sort Key: (sum((lineitem.l_extendedprice * ('1'::numeric - lineitem.l_discount)))) DESC, orders.o_orderdate
+   Sort Method: quicksort  Memory: 1111kB
+   ->  GroupAggregate  (cost=312967.94..322505.54 rows=317920 width=44) (actual time=3107.819..3126.798 rows=11620 loops=1)
+         Group Key: lineitem.l_orderkey, orders.o_orderdate, orders.o_shippriority
+         ->  Sort  (cost=312967.94..313762.74 rows=317920 width=24) (actual time=3107.787..3109.886 rows=30519 loops=1)
+               Sort Key: lineitem.l_orderkey, orders.o_orderdate, orders.o_shippriority
+               Sort Method: quicksort  Memory: 2856kB
+               ->  Nested Loop  (cost=5970.87..277392.24 rows=317920 width=24) (actual time=79.419..3081.893 rows=30519 loops=1)
+                     ->  Hash Join  (cost=5970.44..52735.43 rows=148012 width=12) (actual time=76.639..725.567 rows=147126 loops=1)
+                           Hash Cond: (orders.o_custkey = customer.c_custkey)
+                           ->  Seq Scan on orders  (cost=0.00..44845.00 rows=731404 width=16) (actual time=0.599..352.070 rows=727305 loops=1)
+                                 Filter: (o_orderdate < '1995-03-15'::date)
+                                 Rows Removed by Filter: 772695
+                           ->  Hash  (cost=5591.00..5591.00 rows=30355 width=4) (actual time=75.865..75.866 rows=30142 loops=1)
+                                 Buckets: 32768  Batches: 1  Memory Usage: 1316kB
+                                 ->  Seq Scan on customer  (cost=0.00..5591.00 rows=30355 width=4) (actual time=0.263..67.295 rows=30142 loops=1)
+                                       Filter: (c_mktsegment = 'BUILDING'::bpchar)
+                                       Rows Removed by Filter: 119858
+                     ->  Index Scan using lineitem_pkey on lineitem  (cost=0.43..1.44 rows=8 width=16) (actual time=0.015..0.016 rows=0 loops=147126)
+                           Index Cond: (l_orderkey = orders.o_orderkey)
+                           Filter: (l_shipdate > '1995-03-15'::date)
+                           Rows Removed by Filter: 4
+ Planning Time: 11.580 ms
+ Execution Time: 3134.038 ms
+(25 rows)
+

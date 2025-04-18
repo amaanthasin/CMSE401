@@ -1,0 +1,20 @@
+SET
+SET
+SET
+                                                                    QUERY PLAN                                                                    
+--------------------------------------------------------------------------------------------------------------------------------------------------
+ Gather  (cost=321463.62..388286.58 rows=108120 width=64) (actual time=12070.047..14750.839 rows=100366 loops=1)
+   Workers Planned: 1
+   Workers Launched: 1
+   ->  Parallel Hash Join  (cost=320463.62..376474.58 rows=63600 width=64) (actual time=12043.045..14135.984 rows=50183 loops=2)
+         Hash Cond: (o.user_id = u.id)
+         ->  Parallel Seq Scan on orders o  (cost=0.00..5088.00 rows=63600 width=36) (actual time=0.107..75.317 rows=50183 loops=2)
+               Filter: (total > '400'::numeric)
+               Rows Removed by Filter: 199817
+         ->  Parallel Hash  (cost=191083.50..191083.50 rows=6369450 width=36) (actual time=11839.372..11839.379 rows=10000000 loops=2)
+               Buckets: 131072  Batches: 256  Memory Usage: 5344kB
+               ->  Parallel Seq Scan on users u  (cost=0.00..191083.50 rows=6369450 width=36) (actual time=0.362..8277.984 rows=10000000 loops=2)
+ Planning Time: 9.006 ms
+ Execution Time: 14757.881 ms
+(13 rows)
+
